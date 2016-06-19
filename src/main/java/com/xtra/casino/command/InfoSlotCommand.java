@@ -37,6 +37,7 @@ import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.core.command.annotation.RegisterCommand;
@@ -76,10 +77,13 @@ public class InfoSlotCommand extends CommandBase<CommandSource> {
             return CommandResult.empty();
         }
         SlotMachine machine = optional.get().values().iterator().next();
+        Vector3d vector = machine.getPosition();
         PaginationList.builder()
                 .title(Text.of(TextColors.GREEN, name))
                 .padding(Text.of(TextColors.GOLD, "-="))
-                .contents(Text.of(TextColors.GREEN, "Slot type: ", TextColors.BLUE, machine.getType()))
+                .contents(Text.of(TextColors.GREEN, "Slot type: ", TextColors.BLUE, machine.getType()),
+                        Text.of(TextColors.GREEN, "Slot location: ", TextColors.BLUE, vector.getX(), ", ", vector.getY(), ", ", vector.getZ()),
+                        Text.of(TextColors.GREEN, "Slot state: ", TextColors.BLUE, machine.getState()))
                 .sendTo(src);
         return CommandResult.success();
     }

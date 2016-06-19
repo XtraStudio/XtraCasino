@@ -25,8 +25,10 @@
 
 package com.xtra.casino.serializer.slot;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.reflect.TypeToken;
 import com.xtra.casino.api.slot.SlotMachine;
+import com.xtra.casino.api.slot.SlotState;
 import com.xtra.casino.api.slot.SlotType;
 
 import ninja.leaping.configurate.ConfigurationNode;
@@ -39,12 +41,23 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
     public SlotMachine deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
         String slotName = value.getNode("name").getString();
         SlotType slotType = SlotType.valueOf(value.getNode("type").getString());
-        return new SlotMachine(slotName, slotType);
+        SlotState slotState = SlotState.valueOf(value.getNode("state").getString());
+
+        String vectorString = value.getNode("location").getString();
+        String[] coordinates = vectorString.split(",");
+        double x = Double.valueOf(coordinates[0]);
+        double y = Double.valueOf(coordinates[1]);
+        double z = Double.valueOf(coordinates[2]);
+
+        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState);
     }
 
     @Override
     public void serialize(TypeToken<?> type, SlotMachine obj, ConfigurationNode value) throws ObjectMappingException {
+        Vector3d vector = obj.getPosition();
         value.getNode("name").setValue(obj.getName());
         value.getNode("type").setValue(obj.getType().toString());
+        value.getNode("location").setValue(vector.getX() + "," + vector.getY() + "," + vector.getZ());
+        value.getNode("state").setValue(obj.getState().toString());
     }
 }

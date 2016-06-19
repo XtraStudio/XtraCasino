@@ -25,63 +25,71 @@
 
 package com.xtra.casino.command;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.TextMessageException;
 
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.casino.api.slot.SlotState;
-import com.xtra.casino.api.slot.SlotType;
 import com.xtra.core.command.annotation.RegisterCommand;
 import com.xtra.core.command.base.CommandBase;
 
+import ninja.leaping.configurate.ConfigurationNode;
+
 @RegisterCommand(childOf = CasinoCommand.class)
-public class CreateSlotCommand extends CommandBase<Player> {
+public class SetSlotStateCommand extends CommandBase<CommandSource> {
 
     @Override
     public String[] aliases() {
-        return new String[] {"create", "c"};
+        return new String[] {"set-state", "setstate"};
     }
 
     @Override
     public CommandElement[] args() {
         return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-                GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))};
+                GenericArguments.onlyOne(GenericArguments.string(Text.of("state")))};
     }
 
     @Override
     public String description() {
-        return "Creates a slot machine!";
+        return "Sets the slot state as either active or disabled.";
     }
 
     @Override
     public String permission() {
-        return "xtracasino.create";
+        return "xtracasino.setstate";
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
         String name = args.<String>getOne("name").get();
-        String type = args.<String>getOne("type").get();
-        Optional<SlotType> slotType = SlotType.getType(type);
-        if (!slotType.isPresent()) {
-            throw new TextMessageException(Text.of(TextColors.RED, "Slot type ", TextColors.GOLD, type, TextColors.RED, " not found!"));
-        }
-        SlotMachine machine = new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE);
-        if (!XtraCasino.instance().getGsonHandler().saveSlot(machine)) {
-            src.sendMessage(Text.of(TextColors.RED, "A slot with the name ", TextColors.BLUE, name, TextColors.RED, " already exists!"));
+        String state = args.<String>getOne("state").get();
+        Optional<SlotState> optional = SlotState.getState(state);
+        if (!optional.isPresent()) {
+            src.sendMessage(
+                    Text.of(TextColors.RED, "Could not find the state ", TextColors.BLUE, state, TextColors.RED, "! Did you spell it correctly?"));
             return CommandResult.empty();
         }
-        src.sendMessage(
-                Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Created slot machine ", TextColors.BLUE, name, TextColors.GOLD, "!"));
+        SlotState state2 = optional.get();
+        Optional<Map<ConfigurationNode, SlotMachine>> optional2 = XtraCasino.instance().getGsonHandler().getSlot(name);
+        if (!optional2.isPresent()) {
+            src.sendMessage(Text.of(TextColors.RED, "Could not find slot machine with the name ", TextColors.BLUE, name, TextColors.RED,
+                    "! Did you spell it correctly?"));
+            return CommandResult.empty();
+        }
+        SlotMachine machine = optional2.get().values().iterator().next();
+        machine.setState(state2);
+        XtraCasino.instance().getGsonHandler().overwrite(optional2.get().keySet().iterator().next(), machine);
+        src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Set the state of the slot machine ", TextColors.BLUE, name,
+                TextColors.GOLD, " to ", TextColors.BLUE, state, TextColors.GOLD, "!"));
         return CommandResult.success();
     }
 }

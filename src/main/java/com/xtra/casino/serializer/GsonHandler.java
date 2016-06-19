@@ -74,14 +74,20 @@ public class GsonHandler {
         this.load();
     }
 
-    public void saveSlot(SlotMachine machine) {
+    public boolean saveSlot(SlotMachine machine) {
         this.load();
+        if (this.getSlot(machine.getName()).isPresent()) {
+            return false;
+        }
+
         try {
             this.node.getAppendedNode().setValue(TypeToken.of(SlotMachine.class), machine);
         } catch (ObjectMappingException e) {
             e.printStackTrace();
+            return false;
         }
         this.save();
+        return true;
     }
 
     public Optional<Map<ConfigurationNode, SlotMachine>> getSlot(String name) {
@@ -89,10 +95,8 @@ public class GsonHandler {
         for (ConfigurationNode configNode : this.node.getChildrenList()) {
             try {
                 SlotMachine machine = configNode.getValue(TypeToken.of(SlotMachine.class));
-                if (name.equals(machine.getName())) {
-                    Map<ConfigurationNode, SlotMachine> cs = new HashMap<>();
-                    cs.put(configNode, machine);
-                    return Optional.of(cs);
+                if (name.toLowerCase().equals(machine.getName().toLowerCase())) {
+                    return Optional.of(this.addToMap(configNode, machine));
                 }
             } catch (ObjectMappingException e) {
                 e.printStackTrace();
@@ -102,7 +106,6 @@ public class GsonHandler {
     }
 
     public boolean removeSlot(String name) {
-        this.load();
         Optional<Map<ConfigurationNode, SlotMachine>> optional = this.getSlot(name);
         if (!optional.isPresent()) {
             return false;
@@ -111,6 +114,21 @@ public class GsonHandler {
         map.keySet().iterator().next().setValue(null);
         this.save();
         return true;
+    }
+
+    public void overwrite(ConfigurationNode node, SlotMachine machine) {
+        try {
+            node.setValue(TypeToken.of(SlotMachine.class), machine);
+        } catch (ObjectMappingException e) {
+            e.printStackTrace();
+        }
+        this.save();
+    }
+
+    private Map<ConfigurationNode, SlotMachine> addToMap(ConfigurationNode node, SlotMachine machine) {
+        Map<ConfigurationNode, SlotMachine> cs = new HashMap<>();
+        cs.put(node, machine);
+        return cs;
     }
 
     private void load() {

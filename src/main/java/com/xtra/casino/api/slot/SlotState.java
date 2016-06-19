@@ -25,42 +25,24 @@
 
 package com.xtra.casino.api.slot;
 
-import com.flowpowered.math.vector.Vector3d;
+import java.util.Optional;
 
-public class SlotMachine {
+public enum SlotState {
 
-    private String name;
-    private SlotType type;
-    private Vector3d vector;
-    private SlotState state;
+    ACTIVE, DISABLED;
 
-    public SlotMachine() {
-    }
-
-    public SlotMachine(String name, SlotType type, Vector3d vector, SlotState state) {
-        this.name = name;
-        this.type = type;
-        this.vector = vector;
-        this.state = state;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public SlotType getType() {
-        return this.type;
-    }
-
-    public Vector3d getPosition() {
-        return this.vector;
-    }
-
-    public SlotState getState() {
-        return this.state;
-    }
-
-    public void setState(SlotState state) {
-        this.state = state;
+    /**
+     * Gets a {@link SlotState} enum based on the string input.
+     * 
+     * @param type The string state
+     * @return The enum slot state
+     */
+    public static Optional<SlotState> getState(String type) {
+        for (SlotState slotState : SlotState.class.getEnumConstants()) {
+            if (type.equals(slotState.toString().toLowerCase())) {
+                return Optional.of(slotState);
+            }
+        }
+        return Optional.empty();
     }
 }
