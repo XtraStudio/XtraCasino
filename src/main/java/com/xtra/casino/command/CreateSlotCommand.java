@@ -76,11 +76,14 @@ public class CreateSlotCommand extends CommandBase<Player> {
         if (!slotType.isPresent()) {
             throw new TextMessageException(Text.of(TextColors.RED, "Slot type ", TextColors.GOLD, type, TextColors.RED, " not found!"));
         }
+        if (name.length() > 15) {
+            throw new TextMessageException(Text.of(TextColors.RED, "The name ", TextColors.BLUE, name, TextColors.RED, " is too long!"));
+        }
         SlotMachine machine =
                 new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId());
         if (!XtraCasino.instance().getGsonHandler().saveSlot(machine)) {
-            src.sendMessage(Text.of(TextColors.RED, "A slot with the name ", TextColors.BLUE, name, TextColors.RED, " already exists!"));
-            return CommandResult.empty();
+            throw new TextMessageException(
+                    Text.of(TextColors.RED, "A slot with the name ", TextColors.BLUE, name, TextColors.RED, " already exists!"));
         }
         XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionUtil.getCardinalDirectionFromYaw(src.getRotation().getY()));
         src.sendMessage(

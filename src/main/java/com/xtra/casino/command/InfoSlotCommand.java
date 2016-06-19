@@ -36,6 +36,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.TextMessageException;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.xtra.casino.XtraCasino;
@@ -73,8 +74,8 @@ public class InfoSlotCommand extends CommandBase<CommandSource> {
         String name = args.<String>getOne("name").get();
         Optional<Map<ConfigurationNode, SlotMachine>> optional = XtraCasino.instance().getGsonHandler().getSlot(name);
         if (!optional.isPresent()) {
-            src.sendMessage(Text.of(TextColors.RED, "Could not find a slot with the name ", TextColors.BLUE, name, TextColors.RED, "!"));
-            return CommandResult.empty();
+            throw new TextMessageException(
+                    Text.of(TextColors.RED, "Could not find a slot with the name ", TextColors.BLUE, name, TextColors.RED, "!"));
         }
         SlotMachine machine = optional.get().values().iterator().next();
         Vector3d vector = machine.getPosition();

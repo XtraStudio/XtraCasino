@@ -50,6 +50,7 @@ public class SlotBlockHandler {
         }
         List<Text> signText = new ArrayList<>();
         signText.add(Text.of(TextColors.DARK_RED, TextStyles.BOLD, "[Slot Machine]"));
+        signText.add(Text.of(TextColors.DARK_BLUE, TextStyles.BOLD, machine.getName()));
 
         Location<World> loc = new Location<World>(optional.get(), machine.getPosition());
         loc.setBlockType(BlockTypes.WALL_SIGN);

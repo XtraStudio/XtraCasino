@@ -37,6 +37,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
+import org.spongepowered.api.util.TextMessageException;
 
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
@@ -70,8 +71,7 @@ public class ListSlotsCommand extends CommandBase<CommandSource> {
     public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
         List<SlotMachine> machines = XtraCasino.instance().getGsonHandler().getAllSlots();
         if (machines.isEmpty()) {
-            src.sendMessage(Text.of(TextColors.RED, "No slot machines found."));
-            return CommandResult.empty();
+            throw new TextMessageException(Text.of(TextColors.RED, "No slot machines found."));
         }
         List<Text> slotText = new ArrayList<>();
         for (SlotMachine machine : machines) {

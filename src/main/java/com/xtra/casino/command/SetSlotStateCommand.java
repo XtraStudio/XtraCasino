@@ -35,6 +35,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.TextMessageException;
 
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
@@ -74,16 +75,14 @@ public class SetSlotStateCommand extends CommandBase<CommandSource> {
         String state = args.<String>getOne("state").get();
         Optional<SlotState> optional = SlotState.getState(state);
         if (!optional.isPresent()) {
-            src.sendMessage(
+            throw new TextMessageException(
                     Text.of(TextColors.RED, "Could not find the state ", TextColors.BLUE, state, TextColors.RED, "! Did you spell it correctly?"));
-            return CommandResult.empty();
         }
         SlotState state2 = optional.get();
         Optional<Map<ConfigurationNode, SlotMachine>> optional2 = XtraCasino.instance().getGsonHandler().getSlot(name);
         if (!optional2.isPresent()) {
-            src.sendMessage(Text.of(TextColors.RED, "Could not find slot machine with the name ", TextColors.BLUE, name, TextColors.RED,
-                    "! Did you spell it correctly?"));
-            return CommandResult.empty();
+            throw new TextMessageException(Text.of(TextColors.RED, "Could not find slot machine with the name ", TextColors.BLUE, name,
+                    TextColors.RED, "! Did you spell it correctly?"));
         }
         SlotMachine machine = optional2.get().values().iterator().next();
         machine.setState(state2);
