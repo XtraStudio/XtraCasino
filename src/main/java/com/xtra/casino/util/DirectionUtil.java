@@ -23,52 +23,23 @@
  * SOFTWARE.
  */
 
-package com.xtra.casino.api.slot;
+package com.xtra.casino.util;
 
-import java.util.UUID;
+import org.spongepowered.api.util.Direction;
 
-import com.flowpowered.math.vector.Vector3d;
+// TODO: put this into XtraCore
+public class DirectionUtil {
 
-public class SlotMachine {
-
-    private String name;
-    private SlotType type;
-    private Vector3d vector;
-    private SlotState state;
-    private UUID worldUUID;
-
-    public SlotMachine() {
-    }
-
-    public SlotMachine(String name, SlotType type, Vector3d vector, SlotState state, UUID worldUUID) {
-        this.name = name;
-        this.type = type;
-        this.vector = vector;
-        this.state = state;
-        this.worldUUID = worldUUID;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public SlotType getType() {
-        return this.type;
-    }
-
-    public Vector3d getPosition() {
-        return this.vector;
-    }
-
-    public SlotState getState() {
-        return this.state;
-    }
-
-    public void setState(SlotState state) {
-        this.state = state;
-    }
-
-    public UUID getWorldUUID() {
-        return this.worldUUID;
+    public static Direction getCardinalDirectionFromYaw(double yaw) {
+        if (yaw >= 135 || yaw <= -135) {
+            return Direction.NORTH;
+        } else if (yaw >= -135 && yaw <= -45) {
+            return Direction.EAST;
+        } else if (yaw >= -45 && yaw <= 45) {
+            return Direction.SOUTH;
+        } else if (yaw >= 45 && yaw <= 135) {
+            return Direction.WEST;
+        }
+        return Direction.NONE;
     }
 }

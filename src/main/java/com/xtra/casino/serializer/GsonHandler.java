@@ -27,7 +27,9 @@ package com.xtra.casino.serializer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -154,6 +156,24 @@ public class GsonHandler {
             e.printStackTrace();
         }
         this.save();
+    }
+
+    /**
+     * Gets all of the slot machines registered.
+     * 
+     * @return All of the slot machines
+     */
+    public List<SlotMachine> getAllSlots() {
+        this.load();
+        List<SlotMachine> slots = new ArrayList<>();
+        for (ConfigurationNode configNode : this.node.getChildrenList()) {
+            try {
+                slots.add(configNode.getValue(TypeToken.of(SlotMachine.class)));
+            } catch (ObjectMappingException e) {
+                e.printStackTrace();
+            }
+        }
+        return slots;
     }
 
     private Map<ConfigurationNode, SlotMachine> addToMap(ConfigurationNode node, SlotMachine machine) {

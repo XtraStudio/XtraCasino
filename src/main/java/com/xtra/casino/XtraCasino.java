@@ -33,6 +33,7 @@ import org.spongepowered.api.plugin.Plugin;
 
 import com.google.inject.Inject;
 import com.xtra.casino.serializer.GsonHandler;
+import com.xtra.casino.util.SlotBlockHandler;
 import com.xtra.core.Core;
 import com.xtra.core.command.CommandHandler;
 import com.xtra.core.text.HelpPaginationHandler;
@@ -43,6 +44,7 @@ public class XtraCasino {
     private @Inject Logger logger;
     private static XtraCasino instance;
     private GsonHandler gsonHandler;
+    private SlotBlockHandler blockHandler;
 
     @Listener
     public void onPreInit(GamePreInitializationEvent event) {
@@ -56,6 +58,7 @@ public class XtraCasino {
         CommandHandler.create();
         HelpPaginationHandler.create();
         this.gsonHandler = new GsonHandler();
+        this.blockHandler = new SlotBlockHandler();
     }
 
     public static XtraCasino instance() {
@@ -68,5 +71,9 @@ public class XtraCasino {
     
     public GsonHandler getGsonHandler() {
         return this.gsonHandler; // TODO: remove when gson stuff is in XtraCore
+    }
+
+    public SlotBlockHandler getBlockHandler() {
+        return this.blockHandler;
     }
 }

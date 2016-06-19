@@ -25,66 +25,65 @@
 
 package com.xtra.casino.command;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
-import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.TextMessageException;
+import org.spongepowered.api.text.format.TextStyles;
 
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
-import com.xtra.casino.api.slot.SlotState;
-import com.xtra.casino.api.slot.SlotType;
-import com.xtra.casino.util.DirectionUtil;
 import com.xtra.core.command.annotation.RegisterCommand;
 import com.xtra.core.command.base.CommandBase;
 
 @RegisterCommand(childOf = CasinoCommand.class)
-public class CreateSlotCommand extends CommandBase<Player> {
+public class ListSlotsCommand extends CommandBase<CommandSource> {
 
     @Override
     public String[] aliases() {
-        return new String[] {"create", "c"};
+        return new String[] {"list"};
     }
 
     @Override
     public CommandElement[] args() {
-        return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-                GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))};
+        return null;
     }
 
     @Override
     public String description() {
-        return "Creates a slot machine!";
+        return "Lists all of the registered slot machines.";
     }
 
     @Override
     public String permission() {
-        return "xtracasino.create";
+        return "xtracasino.list";
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
-        String name = args.<String>getOne("name").get();
-        String type = args.<String>getOne("type").get();
-        Optional<SlotType> slotType = SlotType.getType(type);
-        if (!slotType.isPresent()) {
-            throw new TextMessageException(Text.of(TextColors.RED, "Slot type ", TextColors.GOLD, type, TextColors.RED, " not found!"));
-        }
-        SlotMachine machine =
-                new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId());
-        if (!XtraCasino.instance().getGsonHandler().saveSlot(machine)) {
-            src.sendMessage(Text.of(TextColors.RED, "A slot with the name ", TextColors.BLUE, name, TextColors.RED, " already exists!"));
+    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+        List<SlotMachine> machines = XtraCasino.instance().getGsonHandler().getAllSlots();
+        if (machines.isEmpty()) {
+            src.sendMessage(Text.of(TextColors.RED, "No slot machines found."));
             return CommandResult.empty();
         }
-        XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionUtil.getCardinalDirectionFromYaw(src.getRotation().getY()));
-        src.sendMessage(
-                Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Created slot machine ", TextColors.BLUE, name, TextColors.GOLD, "!"));
+        List<Text> slotText = new ArrayList<>();
+        for (SlotMachine machine : machines) {
+            slotText.add(Text.of(TextActions.runCommand("/casino info " + machine.getName()), TextColors.BLUE, TextStyles.BOLD, machine.getName(),
+                    " - ", TextStyles.RESET, TextColors.GREEN, machine.getType()));
+        }
+
+        PaginationList.builder()
+                .title(Text.of(TextColors.GREEN, "Slots"))
+                .padding(Text.of(TextColors.GOLD, "-="))
+                .contents(slotText)
+                .sendTo(src);
         return CommandResult.success();
     }
 }

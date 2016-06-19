@@ -25,6 +25,8 @@
 
 package com.xtra.casino.serializer.slot;
 
+import java.util.UUID;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.reflect.TypeToken;
 import com.xtra.casino.api.slot.SlotMachine;
@@ -49,7 +51,9 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
         double y = Double.valueOf(coordinates[1]);
         double z = Double.valueOf(coordinates[2]);
 
-        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState);
+        UUID worldUUID = UUID.fromString(value.getNode("world").getString());
+
+        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID);
     }
 
     @Override
@@ -59,5 +63,6 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
         value.getNode("type").setValue(obj.getType().toString());
         value.getNode("location").setValue(vector.getX() + "," + vector.getY() + "," + vector.getZ());
         value.getNode("state").setValue(obj.getState().toString());
+        value.getNode("world").setValue(obj.getWorldUUID().toString());
     }
 }
