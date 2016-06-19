@@ -45,6 +45,9 @@ import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollectio
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
 // TODO: change around when Gson stuff is in XtraCore
+/**
+ * Handles saving slots to a json file.
+ */
 public class GsonHandler {
 
     private GsonConfigurationLoader loader;
@@ -74,6 +77,13 @@ public class GsonHandler {
         this.load();
     }
 
+    /**
+     * Saves a slot to a new node.
+     * 
+     * @param machine The machine to save
+     * @return False if a slot with the same name as the specified slot machine
+     *         already exists
+     */
     public boolean saveSlot(SlotMachine machine) {
         this.load();
         if (this.getSlot(machine.getName()).isPresent()) {
@@ -90,6 +100,13 @@ public class GsonHandler {
         return true;
     }
 
+    /**
+     * Gets a slot machine based off of the specified name of the machine.
+     * 
+     * @param name The name of the slot machine to get
+     * @return A mapping of the node for the slot machine and the slot machine
+     *         itself
+     */
     public Optional<Map<ConfigurationNode, SlotMachine>> getSlot(String name) {
         this.load();
         for (ConfigurationNode configNode : this.node.getChildrenList()) {
@@ -105,6 +122,13 @@ public class GsonHandler {
         return Optional.empty();
     }
 
+    /**
+     * Removes a specified slot machine.
+     * 
+     * @param name The name of the slot machine to remove
+     * @return False if a slot with the same name as the specified slot machine
+     *         already exists
+     */
     public boolean removeSlot(String name) {
         Optional<Map<ConfigurationNode, SlotMachine>> optional = this.getSlot(name);
         if (!optional.isPresent()) {
@@ -116,6 +140,13 @@ public class GsonHandler {
         return true;
     }
 
+    /**
+     * Overwrites the slot machine at the specified node with the new slot
+     * machine.
+     * 
+     * @param node The node to overwrite
+     * @param machine The new slot machine to write
+     */
     public void overwrite(ConfigurationNode node, SlotMachine machine) {
         try {
             node.setValue(TypeToken.of(SlotMachine.class), machine);
