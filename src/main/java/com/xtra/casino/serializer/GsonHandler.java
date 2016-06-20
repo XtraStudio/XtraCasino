@@ -46,7 +46,6 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
-// TODO: change around when Gson stuff is in XtraCore
 /**
  * Handles saving slots to a json file.
  */
@@ -83,23 +82,15 @@ public class GsonHandler {
      * Saves a slot to a new node.
      * 
      * @param machine The machine to save
-     * @return False if a slot with the same name as the specified slot machine
-     *         already exists
      */
-    public boolean saveSlot(SlotMachine machine) {
+    public void saveSlot(SlotMachine machine) {
         this.load();
-        if (this.getSlot(machine.getName()).isPresent()) {
-            return false;
-        }
-
         try {
             this.node.getAppendedNode().setValue(TypeToken.of(SlotMachine.class), machine);
         } catch (ObjectMappingException e) {
             e.printStackTrace();
-            return false;
         }
         this.save();
-        return true;
     }
 
     /**
@@ -174,6 +165,19 @@ public class GsonHandler {
             }
         }
         return slots;
+    }
+
+    /**
+     * Checks if a slot name is already in use.
+     * 
+     * @param name The name of the slot
+     * @return If the name is already in use
+     */
+    public boolean isSlotNameAlreadyInUse(String name) {
+        if (this.getSlot(name).isPresent()) {
+            return true;
+        }
+        return false;
     }
 
     private Map<ConfigurationNode, SlotMachine> addToMap(ConfigurationNode node, SlotMachine machine) {

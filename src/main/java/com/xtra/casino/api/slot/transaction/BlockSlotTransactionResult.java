@@ -23,67 +23,34 @@
  * SOFTWARE.
  */
 
-package com.xtra.casino.api.slot;
+package com.xtra.casino.api.slot.transaction;
 
 import java.util.Set;
-import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import com.flowpowered.math.vector.Vector3d;
+public class BlockSlotTransactionResult {
 
-public class SlotMachine {
+    private Type type;
+    private Set<Location<World>> blocks;
 
-    private String name;
-    private SlotType type;
-    private Vector3d vector;
-    private SlotState state;
-    private UUID worldUUID;
-    private Set<Location<World>> slotBlocks;
-
-    public SlotMachine() {
-    }
-
-    public SlotMachine(String name, SlotType type, Vector3d vector, SlotState state, UUID worldUUID) {
-        this.name = name;
+    public BlockSlotTransactionResult(Type type, @Nullable Set<Location<World>> blocks) {
         this.type = type;
-        this.vector = vector;
-        this.state = state;
-        this.worldUUID = worldUUID;
+        this.blocks = blocks;
     }
 
-    public String getName() {
-        return this.name;
+    public Type getType() {
+        return type;
     }
 
-    public SlotType getType() {
-        return this.type;
+    public Set<Location<World>> getBlocks() {
+        return blocks;
     }
 
-    public Vector3d getPosition() {
-        return this.vector;
-    }
-
-    public SlotState getState() {
-        return this.state;
-    }
-
-    public SlotMachine setState(SlotState state) {
-        this.state = state;
-        return this;
-    }
-
-    public UUID getWorldUUID() {
-        return this.worldUUID;
-    }
-
-    public Set<Location<World>> getSlotBlocks() {
-        return this.slotBlocks;
-    }
-
-    public SlotMachine setSlotBlocks(Set<Location<World>> slotBlocks) {
-        this.slotBlocks = slotBlocks;
-        return this;
+    public enum Type {
+        SUCCESS, FAILURE_WORLD_NOT_FOUND;
     }
 }

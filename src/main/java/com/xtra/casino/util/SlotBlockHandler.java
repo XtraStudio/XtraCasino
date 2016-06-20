@@ -26,8 +26,10 @@
 package com.xtra.casino.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
@@ -40,23 +42,32 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.xtra.casino.api.slot.SlotMachine;
+import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult;
+import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult.Type;
 
 public class SlotBlockHandler {
 
-    public boolean generateBase(SlotMachine machine, Direction direction) {
+    public BlockSlotTransactionResult generateBase(SlotMachine machine, Direction direction) {
         Optional<World> optional = Sponge.getServer().getWorld(machine.getWorldUUID());
         if (!optional.isPresent()) {
-            return false;
+            return new BlockSlotTransactionResult(Type.FAILURE_WORLD_NOT_FOUND, null);
         }
         List<Text> signText = new ArrayList<>();
         signText.add(Text.of(TextColors.DARK_RED, TextStyles.BOLD, "[Slot Machine]"));
         signText.add(Text.of(TextColors.DARK_BLUE, TextStyles.BOLD, machine.getName()));
 
+        Set<Location<World>> blocks = new HashSet<>();
+
         Location<World> loc = new Location<World>(optional.get(), machine.getPosition());
         loc.setBlockType(BlockTypes.WALL_SIGN);
         loc.offer(Keys.SIGN_LINES, signText);
         loc.offer(Keys.DIRECTION, direction.getOpposite());
-        loc.getRelative(direction).setBlockType(BlockTypes.STONEBRICK);
-        return true;
+
+        Location<World> loc1_1 = loc.getRelative(direction);
+        loc1_1.setBlockType(BlockTypes.STONEBRICK);
+
+        blocks.add(loc);
+        blocks.add(loc1_1);
+        return new BlockSlotTransactionResult(Type.SUCCESS, blocks);
     }
 }

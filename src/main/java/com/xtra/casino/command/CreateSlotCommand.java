@@ -40,6 +40,8 @@ import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.casino.api.slot.SlotState;
 import com.xtra.casino.api.slot.SlotType;
+import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult;
+import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult.Type;
 import com.xtra.casino.util.DirectionUtil;
 import com.xtra.core.command.annotation.RegisterCommand;
 import com.xtra.core.command.base.CommandBase;
@@ -79,13 +81,17 @@ public class CreateSlotCommand extends CommandBase<Player> {
         if (name.length() > 15) {
             throw new TextMessageException(Text.of(TextColors.RED, "The name ", TextColors.BLUE, name, TextColors.RED, " is too long!"));
         }
-        SlotMachine machine =
-                new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId());
-        if (!XtraCasino.instance().getGsonHandler().saveSlot(machine)) {
+        if (XtraCasino.instance().getGsonHandler().isSlotNameAlreadyInUse(name)) {
             throw new TextMessageException(
                     Text.of(TextColors.RED, "A slot with the name ", TextColors.BLUE, name, TextColors.RED, " already exists!"));
         }
-        XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionUtil.getCardinalDirectionFromYaw(src.getRotation().getY()));
+        SlotMachine machine =
+                new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId());
+        BlockSlotTransactionResult transaction = XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionUtil.getCardinalDirectionFromYaw(src.getRotation().getY()));
+        if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {
+            throw new TextMessageException(Text.of(TextColors.RED, "Could not find the world!"));
+        }
+        XtraCasino.instance().getGsonHandler().saveSlot(machine.setSlotBlocks(transaction.getBlocks()));
         src.sendMessage(
                 Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Created slot machine ", TextColors.BLUE, name, TextColors.GOLD, "!"));
         return CommandResult.success();

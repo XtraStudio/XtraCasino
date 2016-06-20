@@ -70,7 +70,7 @@ public class XtraCasino {
     }
     
     public GsonHandler getGsonHandler() {
-        return this.gsonHandler; // TODO: remove when gson stuff is in XtraCore
+        return this.gsonHandler;
     }
 
     public SlotBlockHandler getBlockHandler() {
