@@ -57,7 +57,8 @@ public class CreateSlotCommand extends CommandBase<Player> {
     @Override
     public CommandElement[] args() {
         return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-                GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))};
+                GenericArguments.onlyOne(GenericArguments.string(Text.of("type"))),
+                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("cost")))};
     }
 
     @Override
@@ -74,6 +75,7 @@ public class CreateSlotCommand extends CommandBase<Player> {
     public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
         String name = args.<String>getOne("name").get();
         String type = args.<String>getOne("type").get();
+        double cost = args.<Double>getOne("cost").get();
         Optional<SlotType> slotType = SlotType.getType(type);
         if (!slotType.isPresent()) {
             throw new TextMessageException(Text.of(TextColors.RED, "Slot type ", TextColors.GOLD, type, TextColors.RED, " not found!"));
@@ -86,7 +88,7 @@ public class CreateSlotCommand extends CommandBase<Player> {
                     Text.of(TextColors.RED, "A slot with the name ", TextColors.BLUE, name, TextColors.RED, " already exists!"));
         }
         SlotMachine machine =
-                new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId());
+                new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId(), cost);
         BlockSlotTransactionResult transaction =
                 XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionHandler.getCardinalDirectionFromYaw(src.getRotation().getY()));
         if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {

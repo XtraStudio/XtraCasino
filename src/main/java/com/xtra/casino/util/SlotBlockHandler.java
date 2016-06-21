@@ -25,6 +25,7 @@
 
 package com.xtra.casino.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,13 +36,16 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
+import com.xtra.casino.api.slot.SlotState;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult.Type;
 import com.xtra.core.world.direction.DirectionHandler;
@@ -56,6 +60,9 @@ public class SlotBlockHandler {
         List<Text> signText = new ArrayList<>();
         signText.add(Text.of(TextColors.DARK_RED, TextStyles.BOLD, "[Slot Machine]"));
         signText.add(Text.of(TextColors.DARK_BLUE, TextStyles.BOLD, machine.getName()));
+        signText.add(Text.of(TextColors.DARK_GREEN, TextStyles.BOLD,
+                XtraCasino.instance().getEconomy().getDefaultCurrency().format(BigDecimal.valueOf(machine.getCost()))));
+        signText.add(Text.of(TextColors.DARK_PURPLE, TextStyles.BOLD, "[", machine.getState(), "]"));
 
         Set<Location<World>> blocks = new HashSet<>();
 
@@ -82,6 +89,25 @@ public class SlotBlockHandler {
         for (Location<World> loc : slots) {
             loc.removeBlock();
         }
+    }
+
+    public boolean updateSign(SlotMachine machine) {
+        Optional<World> optional = Sponge.getServer().getWorld(machine.getWorldUUID());
+        if (!optional.isPresent()) {
+            return false;
+        }
+        TextColor stateColor = machine.getState().equals(SlotState.ACTIVE) ? TextColors.DARK_PURPLE : TextColors.DARK_RED;
+
+        List<Text> signText = new ArrayList<>();
+        signText.add(Text.of(TextColors.DARK_RED, TextStyles.BOLD, "[Slot Machine]"));
+        signText.add(Text.of(TextColors.DARK_BLUE, TextStyles.BOLD, machine.getName()));
+        signText.add(Text.of(TextColors.DARK_GREEN, TextStyles.BOLD,
+                XtraCasino.instance().getEconomy().getDefaultCurrency().format(BigDecimal.valueOf(machine.getCost()))));
+        signText.add(Text.of(stateColor, TextStyles.BOLD, "[", machine.getState(), "]"));
+
+        Location<World> loc = new Location<World>(optional.get(), machine.getPosition());
+        loc.offer(Keys.SIGN_LINES, signText);
+        return true;
     }
 
     // TODO: remove once schematics are properly supported

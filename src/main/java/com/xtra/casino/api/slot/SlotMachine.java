@@ -40,18 +40,20 @@ public class SlotMachine {
     private Vector3d vector;
     private SlotState state;
     private UUID worldUUID;
+    private double cost;
     private Set<Location<World>> slotBlocks;
     private Set<Location<World>> slots;
 
     public SlotMachine() {
     }
 
-    public SlotMachine(String name, SlotType type, Vector3d vector, SlotState state, UUID worldUUID) {
+    public SlotMachine(String name, SlotType type, Vector3d vector, SlotState state, UUID worldUUID, double cost) {
         this.name = name;
         this.type = type;
         this.vector = vector;
         this.state = state;
         this.worldUUID = worldUUID;
+        this.cost = cost;
     }
 
     public String getName() {
@@ -77,6 +79,10 @@ public class SlotMachine {
 
     public UUID getWorldUUID() {
         return this.worldUUID;
+    }
+
+    public double getCost() {
+        return this.cost;
     }
 
     public Set<Location<World>> getSlotBlocks() {

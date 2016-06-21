@@ -29,7 +29,9 @@ import org.slf4j.Logger;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.economy.EconomyService;
 
 import com.google.inject.Inject;
 import com.xtra.casino.serializer.GsonHandler;
@@ -45,6 +47,7 @@ public class XtraCasino {
     private static XtraCasino instance;
     private GsonHandler gsonHandler;
     private SlotBlockHandler blockHandler;
+    private EconomyService economy;
 
     @Listener
     public void onPreInit(GamePreInitializationEvent event) {
@@ -61,6 +64,13 @@ public class XtraCasino {
         this.blockHandler = new SlotBlockHandler();
     }
 
+    @Listener
+    public void onEconomyChange(ChangeServiceProviderEvent event) {
+        if (event.getService().equals(EconomyService.class)) {
+            this.economy = (EconomyService) event.getNewProvider();
+        }
+    }
+
     public static XtraCasino instance() {
         return instance;
     }
@@ -75,5 +85,9 @@ public class XtraCasino {
 
     public SlotBlockHandler getBlockHandler() {
         return this.blockHandler;
+    }
+
+    public EconomyService getEconomy() {
+        return this.economy;
     }
 }

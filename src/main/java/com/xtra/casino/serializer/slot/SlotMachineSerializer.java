@@ -59,10 +59,12 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
         double z = Double.valueOf(coordinates[2]);
 
         UUID worldUUID = UUID.fromString(value.getNode("world").getString());
+        double cost = value.getNode("cost").getInt();
+
         Optional<World> optional = Sponge.getServer().getWorld(worldUUID);
         if (!optional.isPresent()) {
             // If no world then return as-is.
-            return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID);
+            return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID, cost);
         }
 
         Set<Location<World>> blockLocs = new HashSet<>();
@@ -82,7 +84,7 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
             slots.add(new Location<World>(optional.get(), x2, y2, z2));
         }
 
-        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID).setSlotBlocks(blockLocs).setSlots(slots);
+        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID, cost).setSlotBlocks(blockLocs).setSlots(slots);
     }
 
     @Override
@@ -93,6 +95,10 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
         value.getNode("location").setValue(vector.getX() + "," + vector.getY() + "," + vector.getZ());
         value.getNode("state").setValue(obj.getState().toString());
         value.getNode("world").setValue(obj.getWorldUUID().toString());
+        value.getNode("cost").setValue(obj.getCost());
+        // Remove any previous values
+        value.getNode("blocks").setValue(null);
+        value.getNode("slots").setValue(null);
         for (Location<World> blockLoc : obj.getSlotBlocks()) {
             value.getNode("blocks").getAppendedNode().setValue(blockLoc.getX() + "," + blockLoc.getY() + "," + blockLoc.getZ());
         }

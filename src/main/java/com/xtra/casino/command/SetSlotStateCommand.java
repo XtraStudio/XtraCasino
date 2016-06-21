@@ -87,6 +87,9 @@ public class SetSlotStateCommand extends CommandBase<CommandSource> {
         SlotMachine machine = optional2.get().values().iterator().next();
         machine.setState(state2);
         XtraCasino.instance().getGsonHandler().overwrite(optional2.get().keySet().iterator().next(), machine);
+        if (!XtraCasino.instance().getBlockHandler().updateSign(machine)) {
+            throw new TextMessageException(Text.of(TextColors.RED, "Could not find slot machine world!"));
+        }
         src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Set the state of the slot machine ", TextColors.BLUE, name,
                 TextColors.GOLD, " to ", TextColors.BLUE, state, TextColors.GOLD, "!"));
         return CommandResult.success();
