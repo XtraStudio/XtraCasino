@@ -42,4 +42,30 @@ public class DirectionUtil {
         }
         return Direction.NONE;
     }
+
+    public static Direction getCardinalLeft(Direction direction) {
+        if (direction.equals(Direction.NORTH)) {
+            return Direction.WEST;
+        } else if (direction.equals(Direction.EAST)) {
+            return Direction.NORTH;
+        } else if (direction.equals(Direction.SOUTH)) {
+            return Direction.EAST;
+        } else if (direction.equals(Direction.WEST)) {
+            return Direction.SOUTH;
+        }
+        return Direction.NONE;
+    }
+
+    public static Direction getCardinalRight(Direction direction) {
+        if (direction.equals(Direction.NORTH)) {
+            return Direction.EAST;
+        } else if (direction.equals(Direction.EAST)) {
+            return Direction.SOUTH;
+        } else if (direction.equals(Direction.SOUTH)) {
+            return Direction.WEST;
+        } else if (direction.equals(Direction.WEST)) {
+            return Direction.NORTH;
+        }
+        return Direction.NONE;
+    }
 }

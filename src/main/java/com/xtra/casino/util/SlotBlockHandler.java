@@ -68,6 +68,8 @@ public class SlotBlockHandler {
 
         blocks.add(loc);
         blocks.add(loc1_1);
+
+        blocks.addAll(this.addSlots(loc1_1, direction));
         return new BlockSlotTransactionResult(Type.SUCCESS, blocks);
     }
 
@@ -75,5 +77,43 @@ public class SlotBlockHandler {
         for (Location<World> loc : blocks) {
             loc.removeBlock();
         }
+    }
+
+    // TODO: remove once schematics are properly supported
+    private Set<Location<World>> addSlots(Location<World> baseBlock, Direction direction) {
+        Set<Location<World>> blocks = new HashSet<>();
+        Direction cardinalLeft = DirectionUtil.getCardinalLeft(direction);
+        Direction cardinalRight = DirectionUtil.getCardinalRight(direction);
+
+        Location<World> backLoc1_1 = baseBlock.getRelative(direction).getRelative(direction).getRelative(direction).getRelative(Direction.UP);
+        Location<World> backLoc1_2 = backLoc1_1.getRelative(Direction.UP);
+        Location<World> backLoc1_3 = backLoc1_2.getRelative(Direction.UP);
+        Location<World> backLoc2_1 = backLoc1_1.getRelative(cardinalLeft).getRelative(cardinalLeft);
+        Location<World> backLoc2_2 = backLoc2_1.getRelative(Direction.UP);
+        Location<World> backLoc2_3 = backLoc2_2.getRelative(Direction.UP);
+        Location<World> backLoc3_1 = backLoc1_1.getRelative(cardinalRight).getRelative(cardinalRight);
+        Location<World> backLoc3_2 = backLoc3_1.getRelative(Direction.UP);
+        Location<World> backLoc3_3 = backLoc3_2.getRelative(Direction.UP);
+
+        backLoc1_1.setBlockType(BlockTypes.TNT);
+        backLoc1_2.setBlockType(BlockTypes.TNT);
+        backLoc1_3.setBlockType(BlockTypes.TNT);
+        backLoc2_1.setBlockType(BlockTypes.TNT);
+        backLoc2_2.setBlockType(BlockTypes.TNT);
+        backLoc2_3.setBlockType(BlockTypes.TNT);
+        backLoc3_1.setBlockType(BlockTypes.TNT);
+        backLoc3_2.setBlockType(BlockTypes.TNT);
+        backLoc3_3.setBlockType(BlockTypes.TNT);
+
+        blocks.add(backLoc1_1);
+        blocks.add(backLoc1_2);
+        blocks.add(backLoc1_3);
+        blocks.add(backLoc2_1);
+        blocks.add(backLoc2_2);
+        blocks.add(backLoc2_3);
+        blocks.add(backLoc3_1);
+        blocks.add(backLoc3_2);
+        blocks.add(backLoc3_3);
+        return blocks;
     }
 }
