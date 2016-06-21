@@ -44,6 +44,7 @@ import org.spongepowered.api.world.World;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult.Type;
+import com.xtra.core.world.direction.DirectionHandler;
 
 public class SlotBlockHandler {
 
@@ -86,8 +87,8 @@ public class SlotBlockHandler {
     // TODO: remove once schematics are properly supported
     private Set<Location<World>> addSlots(Location<World> baseBlock, Direction direction) {
         Set<Location<World>> blocks = new HashSet<>();
-        Direction cardinalLeft = DirectionUtil.getCardinalLeft(direction);
-        Direction cardinalRight = DirectionUtil.getCardinalRight(direction);
+        Direction cardinalLeft = DirectionHandler.getCardinalLeft(direction);
+        Direction cardinalRight = DirectionHandler.getCardinalRight(direction);
 
         Location<World> backLoc1_1 = baseBlock.getRelative(direction).getRelative(direction).getRelative(direction).getRelative(Direction.UP);
         Location<World> backLoc1_2 = backLoc1_1.getRelative(Direction.UP);

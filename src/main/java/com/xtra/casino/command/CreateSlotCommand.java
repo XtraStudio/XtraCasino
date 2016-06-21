@@ -42,9 +42,9 @@ import com.xtra.casino.api.slot.SlotState;
 import com.xtra.casino.api.slot.SlotType;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult.Type;
-import com.xtra.casino.util.DirectionUtil;
 import com.xtra.core.command.annotation.RegisterCommand;
 import com.xtra.core.command.base.CommandBase;
+import com.xtra.core.world.direction.DirectionHandler;
 
 @RegisterCommand(childOf = CasinoCommand.class)
 public class CreateSlotCommand extends CommandBase<Player> {
@@ -87,7 +87,8 @@ public class CreateSlotCommand extends CommandBase<Player> {
         }
         SlotMachine machine =
                 new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId());
-        BlockSlotTransactionResult transaction = XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionUtil.getCardinalDirectionFromYaw(src.getRotation().getY()));
+        BlockSlotTransactionResult transaction =
+                XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionHandler.getCardinalDirectionFromYaw(src.getRotation().getY()));
         if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {
             throw new TextMessageException(Text.of(TextColors.RED, "Could not find the world!"));
         }
