@@ -35,6 +35,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.TextMessageException;
 
 import com.xtra.casino.XtraCasino;
+import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.core.command.annotation.RegisterCommand;
 import com.xtra.core.command.base.CommandBase;
 
@@ -64,10 +65,14 @@ public class RemoveSlotCommand extends CommandBase<CommandSource> {
     @Override
     public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
         String name = args.<String>getOne("name").get();
-        if (!XtraCasino.instance().getGsonHandler().removeSlot(name)) {
+
+        if (!XtraCasino.instance().getGsonHandler().isSlotNameAlreadyInUse(name)) {
             throw new TextMessageException(
-                    Text.of(TextColors.RED, "Could not remove slot ", TextColors.BLUE, name, TextColors.RED, "! Did you spell it correctly?"));
+                    Text.of(TextColors.RED, "Could not find slot ", TextColors.BLUE, name, TextColors.RED, "! Did you spell it correctly?"));
         }
+        SlotMachine machine = XtraCasino.instance().getGsonHandler().getSlot(name).get().values().iterator().next();
+        XtraCasino.instance().getGsonHandler().removeSlot(name);
+        XtraCasino.instance().getBlockHandler().removeBase(machine.getSlotBlocks());
         src.sendMessage(
                 Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Removed slot machine ", TextColors.BLUE, name, TextColors.GOLD, "!"));
         return CommandResult.success();

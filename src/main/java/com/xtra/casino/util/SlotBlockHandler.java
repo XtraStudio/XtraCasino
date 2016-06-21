@@ -70,4 +70,10 @@ public class SlotBlockHandler {
         blocks.add(loc1_1);
         return new BlockSlotTransactionResult(Type.SUCCESS, blocks);
     }
+
+    public void removeBase(Set<Location<World>> blocks) {
+        for (Location<World> loc : blocks) {
+            loc.removeBlock();
+        }
+    }
 }

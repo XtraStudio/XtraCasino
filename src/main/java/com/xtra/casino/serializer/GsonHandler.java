@@ -119,18 +119,11 @@ public class GsonHandler {
      * Removes a specified slot machine.
      * 
      * @param name The name of the slot machine to remove
-     * @return False if a slot with the same name as the specified slot machine
-     *         already exists
      */
-    public boolean removeSlot(String name) {
-        Optional<Map<ConfigurationNode, SlotMachine>> optional = this.getSlot(name);
-        if (!optional.isPresent()) {
-            return false;
-        }
-        Map<ConfigurationNode, SlotMachine> map = optional.get();
+    public void removeSlot(String name) {
+        Map<ConfigurationNode, SlotMachine> map = this.getSlot(name).get();
         map.keySet().iterator().next().setValue(null);
         this.save();
-        return true;
     }
 
     /**
