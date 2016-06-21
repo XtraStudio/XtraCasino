@@ -41,6 +41,7 @@ public class SlotMachine {
     private SlotState state;
     private UUID worldUUID;
     private Set<Location<World>> slotBlocks;
+    private Set<Location<World>> slots;
 
     public SlotMachine() {
     }
@@ -84,6 +85,15 @@ public class SlotMachine {
 
     public SlotMachine setSlotBlocks(Set<Location<World>> slotBlocks) {
         this.slotBlocks = slotBlocks;
+        return this;
+    }
+
+    public Set<Location<World>> getSlots() {
+        return this.slots;
+    }
+
+    public SlotMachine setSlots(Set<Location<World>> slots) {
+        this.slots = slots;
         return this;
     }
 }

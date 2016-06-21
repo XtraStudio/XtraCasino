@@ -72,7 +72,7 @@ public class RemoveSlotCommand extends CommandBase<CommandSource> {
         }
         SlotMachine machine = XtraCasino.instance().getGsonHandler().getSlot(name).get().values().iterator().next();
         XtraCasino.instance().getGsonHandler().removeSlot(name);
-        XtraCasino.instance().getBlockHandler().removeBase(machine.getSlotBlocks());
+        XtraCasino.instance().getBlockHandler().removeBlocks(machine.getSlotBlocks(), machine.getSlots());
         src.sendMessage(
                 Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Removed slot machine ", TextColors.BLUE, name, TextColors.GOLD, "!"));
         return CommandResult.success();

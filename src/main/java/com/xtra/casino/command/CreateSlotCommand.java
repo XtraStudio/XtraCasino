@@ -91,7 +91,7 @@ public class CreateSlotCommand extends CommandBase<Player> {
         if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {
             throw new TextMessageException(Text.of(TextColors.RED, "Could not find the world!"));
         }
-        XtraCasino.instance().getGsonHandler().saveSlot(machine.setSlotBlocks(transaction.getBlocks()));
+        XtraCasino.instance().getGsonHandler().saveSlot(machine.setSlotBlocks(transaction.getBlocks()).setSlots(transaction.getSlots()));
         src.sendMessage(
                 Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Created slot machine ", TextColors.BLUE, name, TextColors.GOLD, "!"));
         return CommandResult.success();

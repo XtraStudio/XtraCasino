@@ -36,18 +36,24 @@ public class BlockSlotTransactionResult {
 
     private Type type;
     private Set<Location<World>> blocks;
+    private Set<Location<World>> slots;
 
-    public BlockSlotTransactionResult(Type type, @Nullable Set<Location<World>> blocks) {
+    public BlockSlotTransactionResult(Type type, @Nullable Set<Location<World>> blocks, @Nullable Set<Location<World>> slots) {
         this.type = type;
         this.blocks = blocks;
+        this.slots = slots;
     }
 
     public Type getType() {
-        return type;
+        return this.type;
     }
 
     public Set<Location<World>> getBlocks() {
-        return blocks;
+        return this.blocks;
+    }
+
+    public Set<Location<World>> getSlots() {
+        return this.slots;
     }
 
     public enum Type {

@@ -73,8 +73,16 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
             double z2 = Double.valueOf(coordinates2[2]);
             blockLocs.add(new Location<World>(optional.get(), x2, y2, z2));
         }
+        Set<Location<World>> slots = new HashSet<>();
+        for (ConfigurationNode node : value.getNode("slots").getChildrenList()) {
+            String[] coordinates2 = node.getString().split(",");
+            double x2 = Double.valueOf(coordinates2[0]);
+            double y2 = Double.valueOf(coordinates2[1]);
+            double z2 = Double.valueOf(coordinates2[2]);
+            slots.add(new Location<World>(optional.get(), x2, y2, z2));
+        }
 
-        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID).setSlotBlocks(blockLocs);
+        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID).setSlotBlocks(blockLocs).setSlots(slots);
     }
 
     @Override
@@ -87,6 +95,9 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
         value.getNode("world").setValue(obj.getWorldUUID().toString());
         for (Location<World> blockLoc : obj.getSlotBlocks()) {
             value.getNode("blocks").getAppendedNode().setValue(blockLoc.getX() + "," + blockLoc.getY() + "," + blockLoc.getZ());
+        }
+        for (Location<World> slot : obj.getSlots()) {
+            value.getNode("slots").getAppendedNode().setValue(slot.getX() + "," + slot.getY() + "," + slot.getZ());
         }
     }
 }

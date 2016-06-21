@@ -50,7 +50,7 @@ public class SlotBlockHandler {
     public BlockSlotTransactionResult generateBase(SlotMachine machine, Direction direction) {
         Optional<World> optional = Sponge.getServer().getWorld(machine.getWorldUUID());
         if (!optional.isPresent()) {
-            return new BlockSlotTransactionResult(Type.FAILURE_WORLD_NOT_FOUND, null);
+            return new BlockSlotTransactionResult(Type.FAILURE_WORLD_NOT_FOUND, null, null);
         }
         List<Text> signText = new ArrayList<>();
         signText.add(Text.of(TextColors.DARK_RED, TextStyles.BOLD, "[Slot Machine]"));
@@ -69,12 +69,16 @@ public class SlotBlockHandler {
         blocks.add(loc);
         blocks.add(loc1_1);
 
-        blocks.addAll(this.addSlots(loc1_1, direction));
-        return new BlockSlotTransactionResult(Type.SUCCESS, blocks);
+        Set<Location<World>> slotBlocks = this.addSlots(loc1_1, direction);
+
+        return new BlockSlotTransactionResult(Type.SUCCESS, blocks, slotBlocks);
     }
 
-    public void removeBase(Set<Location<World>> blocks) {
+    public void removeBlocks(Set<Location<World>> blocks, Set<Location<World>> slots) {
         for (Location<World> loc : blocks) {
+            loc.removeBlock();
+        }
+        for (Location<World> loc : slots) {
             loc.removeBlock();
         }
     }
