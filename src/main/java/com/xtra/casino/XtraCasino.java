@@ -38,6 +38,7 @@ import com.xtra.casino.serializer.GsonHandler;
 import com.xtra.casino.util.SlotBlockHandler;
 import com.xtra.core.Core;
 import com.xtra.core.command.CommandHandler;
+import com.xtra.core.listener.ListenerHandler;
 import com.xtra.core.text.HelpPaginationHandler;
 
 @Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.VERSION, description = PluginInfo.DESCRIPTION)
@@ -62,6 +63,7 @@ public class XtraCasino {
         HelpPaginationHandler.create();
         this.gsonHandler = new GsonHandler();
         this.blockHandler = new SlotBlockHandler();
+        ListenerHandler.registerListeners();
     }
 
     @Listener
