@@ -116,17 +116,6 @@ public class GsonHandler {
     }
 
     /**
-     * Removes a specified slot machine.
-     * 
-     * @param name The name of the slot machine to remove
-     */
-    public void removeSlot(String name) {
-        Map<ConfigurationNode, SlotMachine> map = this.getSlot(name).get();
-        map.keySet().iterator().next().setValue(null);
-        this.save();
-    }
-
-    /**
      * Overwrites the slot machine at the specified node with the new slot
      * machine.
      * 
@@ -179,7 +168,7 @@ public class GsonHandler {
         return cs;
     }
 
-    private void load() {
+    public void load() {
         try {
             this.node = this.loader.load(options);
         } catch (IOException e) {
@@ -187,7 +176,7 @@ public class GsonHandler {
         }
     }
 
-    private void save() {
+    public void save() {
         try {
             this.loader.save(this.node);
         } catch (IOException e) {

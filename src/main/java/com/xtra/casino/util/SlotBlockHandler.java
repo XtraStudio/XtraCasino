@@ -82,11 +82,11 @@ public class SlotBlockHandler {
         return new BlockSlotTransactionResult(Type.SUCCESS, blocks, slotBlocks);
     }
 
-    public void removeBlocks(Set<Location<World>> blocks, Set<Location<World>> slots) {
-        for (Location<World> loc : blocks) {
+    public void removeBlocks(SlotMachine machine) {
+        for (Location<World> loc : machine.getSlotBlocks()) {
             loc.removeBlock();
         }
-        for (Location<World> loc : slots) {
+        for (Location<World> loc : machine.getSlots()) {
             loc.removeBlock();
         }
     }

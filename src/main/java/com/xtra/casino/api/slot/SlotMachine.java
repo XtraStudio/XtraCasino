@@ -37,7 +37,7 @@ public class SlotMachine {
 
     private String name;
     private SlotType type;
-    private Vector3d vector;
+    private Vector3d position;
     private SlotState state;
     private UUID worldUUID;
     private double cost;
@@ -47,10 +47,10 @@ public class SlotMachine {
     public SlotMachine() {
     }
 
-    public SlotMachine(String name, SlotType type, Vector3d vector, SlotState state, UUID worldUUID, double cost) {
+    public SlotMachine(String name, SlotType type, Vector3d position, SlotState state, UUID worldUUID, double cost) {
         this.name = name;
         this.type = type;
-        this.vector = vector;
+        this.position = position;
         this.state = state;
         this.worldUUID = worldUUID;
         this.cost = cost;
@@ -65,7 +65,12 @@ public class SlotMachine {
     }
 
     public Vector3d getPosition() {
-        return this.vector;
+        return this.position;
+    }
+
+    public SlotMachine setPosition(Vector3d position) {
+        this.position = position;
+        return this;
     }
 
     public SlotState getState() {
