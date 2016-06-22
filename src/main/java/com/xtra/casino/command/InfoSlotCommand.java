@@ -38,7 +38,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.TextMessageException;
 
-import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.core.command.annotation.RegisterCommand;
@@ -78,7 +78,7 @@ public class InfoSlotCommand extends CommandBase<CommandSource> {
                     Text.of(TextColors.RED, "Could not find a slot with the name ", TextColors.BLUE, name, TextColors.RED, "!"));
         }
         SlotMachine machine = optional.get().values().iterator().next();
-        Vector3d vector = machine.getPosition();
+        Vector3i vector = machine.getPosition().toInt();
         PaginationList.builder()
                 .title(Text.of(TextColors.GREEN, name))
                 .padding(Text.of(TextColors.GOLD, "-="))

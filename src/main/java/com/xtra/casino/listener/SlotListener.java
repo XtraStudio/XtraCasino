@@ -40,7 +40,7 @@ import com.xtra.casino.api.slot.SlotMachine;
 public class SlotListener {
 
     @Listener
-    public void foo(ChangeBlockEvent.Break event) {
+    public void onBreakBlock(ChangeBlockEvent.Break event) {
         for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
             BlockSnapshot snapshot = transaction.getOriginal();
             if (snapshot.getState().getType().equals(BlockTypes.WALL_SIGN)) {

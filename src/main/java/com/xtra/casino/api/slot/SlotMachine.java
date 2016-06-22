@@ -31,13 +31,13 @@ import java.util.UUID;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 
 public class SlotMachine {
 
     private String name;
     private SlotType type;
-    private Vector3d position;
+    private Vector3i position;
     private SlotState state;
     private UUID worldUUID;
     private double cost;
@@ -47,7 +47,7 @@ public class SlotMachine {
     public SlotMachine() {
     }
 
-    public SlotMachine(String name, SlotType type, Vector3d position, SlotState state, UUID worldUUID, double cost) {
+    public SlotMachine(String name, SlotType type, Vector3i position, SlotState state, UUID worldUUID, double cost) {
         this.name = name;
         this.type = type;
         this.position = position;
@@ -64,11 +64,11 @@ public class SlotMachine {
         return this.type;
     }
 
-    public Vector3d getPosition() {
+    public Vector3i getPosition() {
         return this.position;
     }
 
-    public SlotMachine setPosition(Vector3d position) {
+    public SlotMachine setPosition(Vector3i position) {
         this.position = position;
         return this;
     }

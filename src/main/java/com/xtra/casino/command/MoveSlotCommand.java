@@ -81,7 +81,7 @@ public class MoveSlotCommand extends CommandBase<Player> {
         Map<ConfigurationNode, SlotMachine> map = optional.get();
         SlotMachine machine = map.values().iterator().next();
         XtraCasino.instance().getBlockHandler().removeBlocks(machine);
-        machine.setPosition(src.getLocation().getPosition().floor());
+        machine.setPosition(src.getLocation().getPosition().toInt());
         BlockSlotTransactionResult transaction =
                 XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionHandler.getCardinalDirectionFromYaw(src.getRotation().getY()));
         if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {

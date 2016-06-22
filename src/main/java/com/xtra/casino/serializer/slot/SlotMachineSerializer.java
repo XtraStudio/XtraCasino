@@ -34,7 +34,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.TypeToken;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.casino.api.slot.SlotState;
@@ -54,9 +54,9 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
 
         String vectorString = value.getNode("location").getString();
         String[] coordinates = vectorString.split(",");
-        double x = Double.valueOf(coordinates[0]);
-        double y = Double.valueOf(coordinates[1]);
-        double z = Double.valueOf(coordinates[2]);
+        int x = Integer.valueOf(coordinates[0]);
+        int y = Integer.valueOf(coordinates[1]);
+        int z = Integer.valueOf(coordinates[2]);
 
         UUID worldUUID = UUID.fromString(value.getNode("world").getString());
         double cost = value.getNode("cost").getInt();
@@ -64,7 +64,7 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
         Optional<World> optional = Sponge.getServer().getWorld(worldUUID);
         if (!optional.isPresent()) {
             // If no world then return as-is.
-            return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID, cost);
+            return new SlotMachine(slotName, slotType, new Vector3i(x, y, z), slotState, worldUUID, cost);
         }
 
         Set<Location<World>> blockLocs = new HashSet<>();
@@ -84,12 +84,12 @@ public class SlotMachineSerializer implements TypeSerializer<SlotMachine> {
             slots.add(new Location<World>(optional.get(), x2, y2, z2));
         }
 
-        return new SlotMachine(slotName, slotType, new Vector3d(x, y, z), slotState, worldUUID, cost).setSlotBlocks(blockLocs).setSlots(slots);
+        return new SlotMachine(slotName, slotType, new Vector3i(x, y, z), slotState, worldUUID, cost).setSlotBlocks(blockLocs).setSlots(slots);
     }
 
     @Override
     public void serialize(TypeToken<?> type, SlotMachine obj, ConfigurationNode value) throws ObjectMappingException {
-        Vector3d vector = obj.getPosition();
+        Vector3i vector = obj.getPosition();
         value.getNode("name").setValue(obj.getName());
         value.getNode("type").setValue(obj.getType().toString());
         value.getNode("location").setValue(vector.getX() + "," + vector.getY() + "," + vector.getZ());

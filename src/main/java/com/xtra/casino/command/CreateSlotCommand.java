@@ -88,7 +88,7 @@ public class CreateSlotCommand extends CommandBase<Player> {
                     Text.of(TextColors.RED, "A slot with the name ", TextColors.BLUE, name, TextColors.RED, " already exists!"));
         }
         SlotMachine machine =
-                new SlotMachine(name, slotType.get(), src.getLocation().getPosition().floor(), SlotState.ACTIVE, src.getWorld().getUniqueId(), cost);
+                new SlotMachine(name, slotType.get(), src.getLocation().getPosition().toInt(), SlotState.ACTIVE, src.getWorld().getUniqueId(), cost);
         BlockSlotTransactionResult transaction =
                 XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionHandler.getCardinalDirectionFromYaw(src.getRotation().getY()));
         if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {
