@@ -26,18 +26,30 @@
 package com.xtra.casino;
 
 import org.slf4j.Logger;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.economy.EconomyService;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
 import com.xtra.casino.serializer.GsonHandler;
 import com.xtra.casino.util.SlotBlockHandler;
 import com.xtra.core.Core;
 import com.xtra.core.command.CommandHandler;
+import com.xtra.core.command.runnable.CommandPhase;
+import com.xtra.core.command.runnable.CommandRunnable;
+import com.xtra.core.command.runnable.CommandRunnableHandler;
+import com.xtra.core.command.runnable.CommandRunnableResult;
+import com.xtra.core.command.runnable.RunAt;
 import com.xtra.core.listener.ListenerHandler;
 import com.xtra.core.text.HelpPaginationHandler;
 
@@ -52,7 +64,7 @@ public class XtraCasino {
 
     @Listener
     public void onPreInit(GamePreInitializationEvent event) {
-        logger.info("Initializing XtraCasino version ", PluginInfo.VERSION);
+        this.logger.info("Initializing XtraCasino version ", PluginInfo.VERSION);
         instance = this;
         Core.initialize(this);
     }
@@ -64,6 +76,22 @@ public class XtraCasino {
         this.gsonHandler = new GsonHandler();
         this.blockHandler = new SlotBlockHandler();
         ListenerHandler.registerListeners();
+    }
+
+    @Listener(order = Order.LATE)
+    public void onPostInit(GamePostInitializationEvent event) {
+        if (this.economy == null) {
+            this.logger.error("Economy plugin not detected! XtraCasino will not function properly!");
+
+            CommandRunnableHandler.createForAllCommands(new CommandRunnable() {
+                @Override
+                @RunAt(phase = CommandPhase.PRE)
+                public CommandRunnableResult run(CommandSource source, CommandContext args) {
+                    source.sendMessage(Text.of(TextColors.RED, "An economy plugin has not been installed. XtraCasino cannot function properly."));
+                    return new CommandRunnableResult(CommandResult.empty());
+                }
+            });
+        }
     }
 
     @Listener
