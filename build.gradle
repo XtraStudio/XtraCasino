@@ -22,8 +22,6 @@ dependencies {
 
 blossom {
     replaceToken '@project.version@', project.version, 'src/main/java/com/xtra/casino/PluginInfo.java'
-    replaceToken '@project.id@', project.id, 'src/main/java/com/xtra/casino/PluginInfo.java'
-    replaceToken '@project.name@', project.name, 'src/main/java/com/xtra/casino/PluginInfo.java'
     replaceToken '@project.description@', project.description, 'src/main/java/com/xtra/casino/PluginInfo.java'
     replaceToken '@project.organization@', project.organization, 'src/main/java/com/xtra/casino/PluginInfo.java'
 }

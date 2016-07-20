@@ -48,7 +48,7 @@ import com.xtra.api.command.runnable.CommandRunnableResult;
 import com.xtra.casino.serializer.GsonHandler;
 import com.xtra.casino.util.SlotBlockHandler;
 
-@Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.VERSION, description = PluginInfo.DESCRIPTION)
+@Plugin(id = "xtracasino", name = "XtraCasino", version = PluginInfo.VERSION, description = PluginInfo.DESCRIPTION)
 public class XtraCasino {
 
     private @Inject Logger logger;
