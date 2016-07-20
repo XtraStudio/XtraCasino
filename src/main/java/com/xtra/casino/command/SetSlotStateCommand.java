@@ -37,11 +37,11 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.TextMessageException;
 
+import com.xtra.api.command.annotation.RegisterCommand;
+import com.xtra.api.command.base.CommandBase;
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.casino.api.slot.SlotState;
-import com.xtra.core.command.annotation.RegisterCommand;
-import com.xtra.core.command.base.CommandBase;
 
 import ninja.leaping.configurate.ConfigurationNode;
 
@@ -54,9 +54,8 @@ public class SetSlotStateCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public CommandElement[] args() {
-        return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-                GenericArguments.onlyOne(GenericArguments.string(Text.of("state")))};
+    public String permission() {
+        return "xtracasino.setstate";
     }
 
     @Override
@@ -65,8 +64,15 @@ public class SetSlotStateCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public String permission() {
-        return "xtracasino.setstate";
+    public CommandElement[] args() {
+        return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
+                GenericArguments.onlyOne(GenericArguments.string(Text.of("state")))};
+    }
+
+
+    @Override
+    public String usage() {
+        return "<name> <state>";
     }
 
     @Override

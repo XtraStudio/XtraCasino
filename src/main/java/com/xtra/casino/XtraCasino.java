@@ -30,10 +30,9 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.economy.EconomyService;
@@ -41,17 +40,13 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
+import com.xtra.api.Core;
+import com.xtra.api.command.annotation.RunAt;
+import com.xtra.api.command.runnable.CommandPhase;
+import com.xtra.api.command.runnable.CommandRunnable;
+import com.xtra.api.command.runnable.CommandRunnableResult;
 import com.xtra.casino.serializer.GsonHandler;
 import com.xtra.casino.util.SlotBlockHandler;
-import com.xtra.core.Core;
-import com.xtra.core.command.CommandHandler;
-import com.xtra.core.command.runnable.CommandPhase;
-import com.xtra.core.command.runnable.CommandRunnable;
-import com.xtra.core.command.runnable.CommandRunnableHandler;
-import com.xtra.core.command.runnable.CommandRunnableResult;
-import com.xtra.core.command.runnable.RunAt;
-import com.xtra.core.listener.ListenerHandler;
-import com.xtra.core.text.HelpPaginationHandler;
 
 @Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.VERSION, description = PluginInfo.DESCRIPTION)
 public class XtraCasino {
@@ -71,24 +66,24 @@ public class XtraCasino {
 
     @Listener
     public void onInit(GameInitializationEvent event) {
-        CommandHandler.create();
-        HelpPaginationHandler.create();
+        Core.createCommandHandler(this.getClass());
+        Core.createHelpPaginationBuilder(this.getClass()).build();
+
         this.gsonHandler = new GsonHandler();
         this.blockHandler = new SlotBlockHandler();
-        ListenerHandler.registerListeners();
+
+        Core.createListenerHandler(this.getClass());
     }
 
-    @Listener(order = Order.LATE)
-    public void onPostInit(GamePostInitializationEvent event) {
+    public void onPostInit(GameStartedServerEvent event) {
         if (this.economy == null) {
             this.logger.error("Economy plugin not detected! XtraCasino will not function properly!");
-
-            CommandRunnableHandler.createForAllCommands(new CommandRunnable() {
+            Core.getCommandHandler(this.getClass()).get().getCommandRunnableHandler().addForAllCommands(new CommandRunnable() {
                 @Override
                 @RunAt(phase = CommandPhase.PRE)
                 public CommandRunnableResult run(CommandSource source, CommandContext args) {
                     source.sendMessage(Text.of(TextColors.RED, "An economy plugin has not been installed. XtraCasino cannot function properly."));
-                    return new CommandRunnableResult(CommandResult.empty());
+                    return CommandRunnableResult.stop(CommandResult.empty());
                 }
             });
         }

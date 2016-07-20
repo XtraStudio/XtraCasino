@@ -37,13 +37,13 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.TextMessageException;
 
+import com.xtra.api.Core;
+import com.xtra.api.command.annotation.RegisterCommand;
+import com.xtra.api.command.base.CommandBase;
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult.Type;
-import com.xtra.core.command.annotation.RegisterCommand;
-import com.xtra.core.command.base.CommandBase;
-import com.xtra.core.world.direction.DirectionHandler;
 
 import ninja.leaping.configurate.ConfigurationNode;
 
@@ -56,8 +56,8 @@ public class MoveSlotCommand extends CommandBase<Player> {
     }
 
     @Override
-    public CommandElement[] args() {
-        return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))};
+    public String permission() {
+        return "xtracasino.move";
     }
 
     @Override
@@ -66,8 +66,13 @@ public class MoveSlotCommand extends CommandBase<Player> {
     }
 
     @Override
-    public String permission() {
-        return "xtracasino.move";
+    public CommandElement[] args() {
+        return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))};
+    }
+
+    @Override
+    public String usage() {
+        return "<name>";
     }
 
     @Override
@@ -82,8 +87,8 @@ public class MoveSlotCommand extends CommandBase<Player> {
         SlotMachine machine = map.values().iterator().next();
         XtraCasino.instance().getBlockHandler().removeBlocks(machine);
         machine.setPosition(src.getLocation().getPosition().toInt());
-        BlockSlotTransactionResult transaction =
-                XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionHandler.getCardinalDirectionFromYaw(src.getRotation().getY()));
+        BlockSlotTransactionResult transaction = XtraCasino.instance().getBlockHandler().generateBase(machine,
+                Core.getDirectionHandler().getCardinalDirectionFromYaw(src.getRotation().getY()));
         if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {
             throw new TextMessageException(Text.of(TextColors.RED, "Could not find the world!"));
         }

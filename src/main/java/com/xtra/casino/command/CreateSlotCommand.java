@@ -36,15 +36,15 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.TextMessageException;
 
+import com.xtra.api.Core;
+import com.xtra.api.command.annotation.RegisterCommand;
+import com.xtra.api.command.base.CommandBase;
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
 import com.xtra.casino.api.slot.SlotState;
 import com.xtra.casino.api.slot.SlotType;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult;
 import com.xtra.casino.api.slot.transaction.BlockSlotTransactionResult.Type;
-import com.xtra.core.command.annotation.RegisterCommand;
-import com.xtra.core.command.base.CommandBase;
-import com.xtra.core.world.direction.DirectionHandler;
 
 @RegisterCommand(childOf = CasinoCommand.class)
 public class CreateSlotCommand extends CommandBase<Player> {
@@ -55,10 +55,8 @@ public class CreateSlotCommand extends CommandBase<Player> {
     }
 
     @Override
-    public CommandElement[] args() {
-        return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-                GenericArguments.onlyOne(GenericArguments.string(Text.of("type"))),
-                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("cost")))};
+    public String permission() {
+        return "xtracasino.create";
     }
 
     @Override
@@ -67,8 +65,15 @@ public class CreateSlotCommand extends CommandBase<Player> {
     }
 
     @Override
-    public String permission() {
-        return "xtracasino.create";
+    public CommandElement[] args() {
+        return new CommandElement[] {GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
+                GenericArguments.onlyOne(GenericArguments.string(Text.of("type"))),
+                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("cost")))};
+    }
+
+    @Override
+    public String usage() {
+        return "<name> <type> <cost>";
     }
 
     @Override
@@ -89,8 +94,8 @@ public class CreateSlotCommand extends CommandBase<Player> {
         }
         SlotMachine machine =
                 new SlotMachine(name, slotType.get(), src.getLocation().getPosition().toInt(), SlotState.ACTIVE, src.getWorld().getUniqueId(), cost);
-        BlockSlotTransactionResult transaction =
-                XtraCasino.instance().getBlockHandler().generateBase(machine, DirectionHandler.getCardinalDirectionFromYaw(src.getRotation().getY()));
+        BlockSlotTransactionResult transaction = XtraCasino.instance().getBlockHandler().generateBase(machine,
+                Core.getDirectionHandler().getCardinalDirectionFromYaw(src.getRotation().getY()));
         if (transaction.getType().equals(Type.FAILURE_WORLD_NOT_FOUND)) {
             throw new TextMessageException(Text.of(TextColors.RED, "Could not find the world!"));
         }

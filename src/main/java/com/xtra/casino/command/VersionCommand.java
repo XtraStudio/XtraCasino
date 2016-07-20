@@ -36,9 +36,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import com.xtra.api.command.annotation.RegisterCommand;
+import com.xtra.api.command.base.CommandBase;
 import com.xtra.casino.PluginInfo;
-import com.xtra.core.command.annotation.RegisterCommand;
-import com.xtra.core.command.base.CommandBase;
 
 @RegisterCommand(childOf = CasinoCommand.class)
 public class VersionCommand extends CommandBase<CommandSource> {
@@ -49,8 +49,8 @@ public class VersionCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public CommandElement[] args() {
-        return null;
+    public String permission() {
+        return "xtracasino.version";
     }
 
     @Override
@@ -59,8 +59,13 @@ public class VersionCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public String permission() {
-        return "xtracasino.version";
+    public CommandElement[] args() {
+        return null;
+    }
+
+    @Override
+    public String usage() {
+        return null;
     }
 
     @Override
@@ -70,7 +75,7 @@ public class VersionCommand extends CommandBase<CommandSource> {
                 .title(Text.of(TextColors.GREEN, "XtraCasino"))
                 .padding(Text.of(TextColors.GOLD, "-="))
                 .contents(Text.of(TextColors.GREEN, "Version: ", TextColors.BLUE, PluginInfo.VERSION),
-                        Text.of(TextColors.GREEN, "Author: ", TextColors.BLUE, "12AwesomeMan34"),
+                        Text.of(TextColors.GREEN, "Author: ", TextColors.BLUE, "12AwsomeMan34"),
                         Text.of(TextColors.GREEN, "GitHub: ", TextActions.openUrl(new URL(url)), TextColors.BLUE, url))
                 .sendTo(src);
         return CommandResult.success();

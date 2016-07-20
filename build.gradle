@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'net.minecrell.licenser' version '0.2'
     id 'net.ellune.blossom' version '1.0.1'
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
 repositories {
@@ -17,8 +16,8 @@ repositories {
 }
 
 dependencies {
-    compile "org.spongepowered:spongeapi:4.1.0"
-    compile "com.github.XtraStudio:XtraCore:master-SNAPSHOT"
+    compile "org.spongepowered:spongeapi:5.0-SNAPSHOT"
+    compile "com.github.XtraStudio:XtraAPI:master-SNAPSHOT"
 }
 
 blossom {
@@ -38,18 +37,6 @@ license {
     header rootProject.file('HEADER.txt')
     include '**/*.java'
     style.java = 'JAVADOC'
-}
-
-shadowJar {
-    dependencies {
-        include(dependency('com.github.XtraStudio:XtraCore'))
-    }
-    relocate 'com.xtra.core', 'dependencies.com.xtra.casino'
-    classifier = ''
-}
-
-artifacts {
-    archives shadowJar
 }
 
 task wrapper(type: Wrapper) {

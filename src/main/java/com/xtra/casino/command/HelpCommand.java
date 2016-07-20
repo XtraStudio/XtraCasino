@@ -30,11 +30,12 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 
-import com.xtra.core.command.annotation.RegisterCommand;
-import com.xtra.core.command.base.CommandBase;
-import com.xtra.core.text.HelpPaginationHandler;
+import com.xtra.api.Core;
+import com.xtra.api.command.annotation.RegisterCommand;
+import com.xtra.api.command.base.CommandBase;
+import com.xtra.casino.XtraCasino;
 
-@RegisterCommand(childOf = CasinoCommand.class)
+@RegisterCommand(async = true, childOf = CasinoCommand.class)
 public class HelpCommand extends CommandBase<CommandSource> {
 
     @Override
@@ -43,8 +44,8 @@ public class HelpCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public CommandElement[] args() {
-        return null;
+    public String permission() {
+        return "xtracasino.help";
     }
 
     @Override
@@ -53,13 +54,18 @@ public class HelpCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public String permission() {
-        return "xtracasino.help";
+    public CommandElement[] args() {
+        return null;
+    }
+
+    @Override
+    public String usage() {
+        return null;
     }
 
     @Override
     public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
-        HelpPaginationHandler.get().generateList(src);
+        Core.getHelpPaginationHandler(XtraCasino.class).get().sendList(src);
         return CommandResult.success();
     }
 }

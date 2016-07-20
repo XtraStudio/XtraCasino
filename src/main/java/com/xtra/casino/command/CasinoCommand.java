@@ -30,9 +30,9 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 
-import com.xtra.core.command.CommandHandler;
-import com.xtra.core.command.annotation.RegisterCommand;
-import com.xtra.core.command.base.CommandBase;
+import com.xtra.api.Core;
+import com.xtra.api.command.annotation.RegisterCommand;
+import com.xtra.api.command.base.CommandBase;
 
 @RegisterCommand
 public class CasinoCommand extends CommandBase<CommandSource> {
@@ -43,24 +43,29 @@ public class CasinoCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public CommandElement[] args() {
-        return null;
-    }
-
-    @Override
-    public String description() {
-        return "Primary command for XtraCasino.";
-    }
-
-    @Override
     public String permission() {
         return "xtracasino.base";
     }
 
     @Override
+    public String description() {
+        return null;
+    }
+
+    @Override
+    public CommandElement[] args() {
+        return null;
+    }
+
+    @Override
+    public String usage() {
+        return null;
+    }
+
+    @Override
     public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
         // Send the help list
-        CommandHandler.getCommand(HelpCommand.class).execute(src, args);
+        Core.getCommandRegistry().getCommand(HelpCommand.class).get().execute(src, args);
         return CommandResult.success();
     }
 }

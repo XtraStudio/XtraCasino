@@ -39,10 +39,10 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.util.TextMessageException;
 
+import com.xtra.api.command.annotation.RegisterCommand;
+import com.xtra.api.command.base.CommandBase;
 import com.xtra.casino.XtraCasino;
 import com.xtra.casino.api.slot.SlotMachine;
-import com.xtra.core.command.annotation.RegisterCommand;
-import com.xtra.core.command.base.CommandBase;
 
 @RegisterCommand(childOf = CasinoCommand.class)
 public class ListSlotsCommand extends CommandBase<CommandSource> {
@@ -53,8 +53,8 @@ public class ListSlotsCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public CommandElement[] args() {
-        return null;
+    public String permission() {
+        return "xtracasino.list";
     }
 
     @Override
@@ -63,8 +63,13 @@ public class ListSlotsCommand extends CommandBase<CommandSource> {
     }
 
     @Override
-    public String permission() {
-        return "xtracasino.list";
+    public CommandElement[] args() {
+        return null;
+    }
+
+    @Override
+    public String usage() {
+        return null;
     }
 
     @Override
